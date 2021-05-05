@@ -9,7 +9,7 @@ const Exam = Object.create(null);
 
 // Lists
 
-// Write a function that returns a list containig every third item in
+// Write a function that returns a list containing every third item in
 // the original list starting with the first item.
 //    for example:
 //      an input list of [1,2,3,4,5,6,7,8]
