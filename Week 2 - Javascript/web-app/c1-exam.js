@@ -14,7 +14,11 @@ const Exam = Object.create(null);
 //    for example:
 //      an input list of [1,2,3,4,5,6,7,8]
 //      returns [1,4,7]
+<<<<<<< HEAD
 Exam.every_third = function numbers(array) {
+=======
+Exam.every_third = function (array) {
+>>>>>>> 25dfbd70f028739ed2c0dfdcc8eb73c4ed00a916
     return array.filter((ignore, k) => k % 3 === 0);
 };
 
