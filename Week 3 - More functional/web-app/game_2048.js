@@ -106,11 +106,80 @@ const pad_zeros = (row) => row.concat([0, 0, 0, 0]).slice(0, 4);
 
 const row_left = (row) => pad_zeros(combine_tiles(strip_zeros(row)));
 
+const transpose = (board) => board[0].map(
+    (_, colIndex) => board.map((row) => row[colIndex])
+);
+
 game_2048.left = (board) => board.map(row_left);
 
 game_2048.right = (board) => h_flip(game_2048.left(h_flip(board)));
 
-game_2048.up = identity;
-game_2048.down = identity;
+game_2048.up = (board) => transpose(game_2048.left(transpose(board)));
+
+game_2048.down = (board) => transpose(game_2048.right(transpose(board)));
+
+// const board = [
+//     [1, 1, 2, 2],
+//     [1, 0, 0, 1],
+//     [0, 0, 1, 1],
+//     [0, 2, 2, 3]
+// ];
+
+const board = [
+    [1, 2, 3, 4],
+    [2, 1, 4, 3],
+    [3, 4, 1, 2],
+    [4, 1, 2, 3]
+];
+
+const emptyBoard = [
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0],
+    [0, 0, 0, 0]
+];
+
+const new_board = () => print_boards(emptyBoard, emptyBoard);
+
+const print_boards = function (b1, b2) {
+    const string_rows_1 = b1.map(String);
+    const string_rows_2 = b2.map(String);
+    const padding = ["       ", "  --\\  ", "  --/  ", "       "];
+    const output = padding.map(
+        (p, k) => string_rows_1[k] + p + string_rows_2[k] + "\n"
+    ).reduce(
+        (a, x) => a + x
+    );
+    console.log(output);
+};
+
+// score = (board) => number, write a score function which takes a board and
+// returns the score for that board. 0 tiles score zero, all other numbered
+// tiles score 2**n points.
+
+const score = function(board) {
+    let out = 0;
+    const listOfNums = board.flat();
+    listOfNums.forEach(function(num) {
+        if (num === 0) {
+            out = out;
+        } else {
+            out = out + 2**num;
+        }
+        return out;});
+};
+
+// Checks if each move done does nnot change the board. If all moves
+// do not change the board, then return false, otherwise true.
+
+const any_valid_moves = function (board) {
+    if (board === left(board) && board === right(board)
+        && board === up(board) && board === down(board)) {
+        return false
+    } else {
+        return true
+    }
+};
 
 export default Object.freeze(game_2048);
+

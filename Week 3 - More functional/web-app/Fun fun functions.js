@@ -98,9 +98,9 @@ const filter = function (gen, predicate) {
 
 
 const concat = function (genOne, genTwo) {
-    var gen = genOne;
+    let gen = genOne;
     return function () {
-        var value = gen() ;
+        let value = gen() ;
         if (value !== undefined) {
             return value;
         }
@@ -111,7 +111,7 @@ const concat = function (genOne, genTwo) {
 
 // Generates a symbol if you give it G: 'G1', 'G2', ...
 const gensymf = function (prefix) {
-    var number = 0
+    let number = 0
     return function () {
         number++ ;
         return prefix + number;
@@ -193,6 +193,68 @@ const liftm = function (binary, op) {
     } ;
 }
 
+const exp = function (value) {
+    return (Array.isArray(value))
+        ? value[0] (
+            exp(value[1]),
+            exp(value[2])
+        )
+        : value
+}
+
+
+// retursion: a function returns itself
+const addg = function (first) {
+    function more(next) {
+        if (next === undefined) {
+            return first;
+        }
+        first += next ;
+        return more ;
+    }
+    if (first !== undefined) {
+        return more ;
+    }
+}
+
+const liftg = function (binary) {
+    return function (first) {
+        if (first === undefined) {
+            return first;
+        }
+        return function more (next) {
+            if (next === undefined) {
+                return first ;
+            }
+            first = binary(first, next) ;
+            return more ;
+        };
+    };
+}
+
+const arrayg = function (first) {
+    let array = [];
+    function more(next) {
+        if (next === undefined) {
+            return array;
+        }
+        array.push(next);
+        return more;
+    }
+    return more(first);
+}
+
+// const continuize = function (unary) {
+//     return function (callback, arg) {
+//         return callback(unary(arg)) ;
+//     };
+// }
+
+function continuize (any) {
+    return function (callback, ...x) {
+        return callback(any(...x)) ;
+    };
+}
 
 
 
