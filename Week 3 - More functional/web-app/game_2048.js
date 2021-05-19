@@ -7,6 +7,7 @@ const game_2048 = Object.create(null);
 //     [0, 2, 2, 3]
 // ];
 
+
 // [1, 1, 2, 2]
 // [1, 1, 2, 2] // strip_zeros
 // [2, 3] // combine_tiles
@@ -100,11 +101,39 @@ const combine_tiles = function (row, new_row = []) {
     }
 };
 
+const transpose = (array) => array[0].map(
+    (ignore, colIndex) => array.map((row) => row[colIndex])
+);
+
+const compose = function (...fs) {
+    return function (value) {
+        return fs.reduceRight(function (a, f) {
+            return f(a);
+        }, value);
+    };
+};
+
+const pipe = function (...fs) {
+    return function (value) {
+        return fs.reduce(function (a, f) {
+            return f(a);
+        }, value);
+    };
+};
+
 // const pad_zeros = (row) => row.concat((new Array(4 - row.length)).fill(0));
 
 const pad_zeros = (row) => row.concat([0, 0, 0, 0]).slice(0, 4);
 
-const row_left = (row) => pad_zeros(combine_tiles(strip_zeros(row)));
+// const row_left = (row) => pad_zeros(combine_tiles(strip_zeros(row)));
+
+// const row_left = compose(pad_zeros, combine_tiles, strip_zeros);
+
+const row_left = pipe(
+    strip_zeros,
+    combine_tiles,
+    pad_zeros
+);
 
 const transpose = (board) => board[0].map(
     (_, colIndex) => board.map((row) => row[colIndex])
@@ -112,8 +141,12 @@ const transpose = (board) => board[0].map(
 
 game_2048.left = (board) => board.map(row_left);
 
-game_2048.right = (board) => h_flip(game_2048.left(h_flip(board)));
+// game_2048.right = (board) => h_flip(game_2048.left(h_flip(board)));
+game_2048.right = compose(h_flip, game_2048.left, h_flip);
 
+game_2048.up = compose(transpose, game_2048.left, transpose);
+
+<<<<<<< HEAD
 game_2048.up = (board) => transpose(game_2048.left(transpose(board)));
 
 game_2048.down = (board) => transpose(game_2048.right(transpose(board)));
@@ -180,6 +213,9 @@ const any_valid_moves = function (board) {
         return true
     }
 };
+=======
+game_2048.down = compose(transpose, game_2048.right, transpose);
+>>>>>>> bbc13f034a1cb448ae79012b7139a011d773b3d9
 
 export default Object.freeze(game_2048);
 
