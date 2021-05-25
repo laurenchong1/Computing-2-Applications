@@ -146,7 +146,6 @@ game_2048.right = compose(h_flip, game_2048.left, h_flip);
 
 game_2048.up = compose(transpose, game_2048.left, transpose);
 
-<<<<<<< HEAD
 game_2048.up = (board) => transpose(game_2048.left(transpose(board)));
 
 game_2048.down = (board) => transpose(game_2048.right(transpose(board)));
@@ -165,14 +164,10 @@ const board = [
     [4, 1, 2, 3]
 ];
 
-const emptyBoard = [
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0],
-    [0, 0, 0, 0]
-];
 
-const new_board = () => print_boards(emptyBoard, emptyBoard);
+game_2048.new_board = () => [
+    [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0], [0, 0, 0, 0]
+];
 
 const print_boards = function (b1, b2) {
     const string_rows_1 = b1.map(String);
@@ -190,17 +185,41 @@ const print_boards = function (b1, b2) {
 // returns the score for that board. 0 tiles score zero, all other numbered
 // tiles score 2**n points.
 
-const score = function(board) {
-    let out = 0;
-    const listOfNums = board.flat();
-    listOfNums.forEach(function(num) {
-        if (num === 0) {
-            out = out;
-        } else {
-            out = out + 2**num;
-        }
-        return out;});
-};
+// game_2014.score = function(board) {
+//     let out = 0;
+//     const listOfNums = board.flat();
+//     listOfNums.forEach(function(num) {
+//         if (num === 0) {
+//             out = out;
+//         } else {
+//             out = out + 2**num;
+//         }
+//         return out;});
+// };
+
+// Freddie's Version
+
+game_2048.score = pipe(map(row_score), sum);
+
+const pipe = (...fs) => (...args) => rest(fs).reduce(
+    (a, f) => f(a),
+    fs[0](...args)
+);
+
+const reduce = (reducer) => (array) => array.reduce(reducer);
+
+const sum = reduce((a, x) => a + x);
+
+const row_score = pipe(strip_zeros, map((n) => 2**n), sum);
+
+const equal = (a, b) => a === b;
+
+const row_equal = pipe(zip(equal), every(identity));
+
+const board_equal = pipe(zip(row_equal), every(identity));
+
+
+
 
 // Checks if each move done does nnot change the board. If all moves
 // do not change the board, then return false, otherwise true.
@@ -213,9 +232,6 @@ const any_valid_moves = function (board) {
         return true
     }
 };
-=======
-game_2048.down = compose(transpose, game_2048.right, transpose);
->>>>>>> bbc13f034a1cb448ae79012b7139a011d773b3d9
 
 export default Object.freeze(game_2048);
 
