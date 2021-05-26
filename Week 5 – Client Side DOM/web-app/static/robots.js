@@ -2,11 +2,9 @@ const Robots = Object.create(null);
 
 const agreeOptions = [
     "Yes!",
-    "Oh goodness!",
-    "Looking Good!",
-    "Awesome dude."
+    "My Man!",
+    "Looking Good!"
 ];
-
 Robots.agreeBot = {
     "name": "Agree Bot",
     "response": function () {
